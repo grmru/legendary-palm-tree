@@ -12,6 +12,7 @@ public class GameEngine
     bool isRunning = false;
 
     int _count = 0;
+    int _lastId = 0;
 
     private Item _player;
     private List<Item> _gameObjects;
@@ -21,8 +22,26 @@ public class GameEngine
         this._player = new Item();
         this._gameObjects = new List<Item>();
 
-        this._gameObjects.Add(new Bullet() { X = 10, Y = 10 });
-        this._gameObjects.Add(new Box() { X = 40, Y = 10 });
+        this._gameObjects.Add(new Box() { ID = _lastId, X = 40, Y = 10 });
+        _lastId++;
+        this._gameObjects.Add(new Box() { ID = _lastId, X = 40, Y = 11 });
+        _lastId++;
+        this._gameObjects.Add(new Box() { ID = _lastId, X = 40, Y = 12 });
+        _lastId++;
+        this._gameObjects.Add(new Box() { ID = _lastId, X = 40, Y = 13 });
+        _lastId++;
+        this._gameObjects.Add(new Box() { ID = _lastId, X = 40, Y = 14 });
+        _lastId++;
+        this._gameObjects.Add(new Box() { ID = _lastId, X = 40, Y = 15 });
+        _lastId++;
+        this._gameObjects.Add(new Box() { ID = _lastId, X = 40, Y = 16 });
+        _lastId++;
+        this._gameObjects.Add(new Box() { ID = _lastId, X = 40, Y = 17 });
+        _lastId++;
+        this._gameObjects.Add(new Box() { ID = _lastId, X = 40, Y = 18 });
+        _lastId++;
+        this._gameObjects.Add(new Box() { ID = _lastId, X = 40, Y = 19 });
+        _lastId++;
     }
 
     public void Run()
@@ -59,12 +78,14 @@ public class GameEngine
                     case ConsoleKey.Spacebar:
                         this._gameObjects.Add(new Bullet()
                         {
+                            ID = _lastId,
                             initialX = _player.X,
                             initialY = _player.Y,
                             X = _player.X,
                             Y = _player.Y,
                             startFrame = _count
                         });
+                        _lastId++;
                         break;
                     default:
                         break;
@@ -93,6 +114,7 @@ public class GameEngine
 
     private char[,] GetFrame(int frameNumber)
     {
+        List<Item> objectsToRemove = new List<Item>();
         List<Item> drawingObjects = new List<Item>();
         for (int i = 0; i < _gameObjects.Count; i++)
         {
@@ -102,7 +124,11 @@ public class GameEngine
                 if (bull.startFrame < frameNumber)
                 {
                     int deltaFrames = frameNumber - bull.startFrame;
-                    bull.X = bull.X + deltaFrames;
+                    bull.X = bull.initialX + deltaFrames;
+                    if (bull.X > xCount)
+                    {
+                        objectsToRemove.Add(bull);
+                    }
                 }
                 drawingObjects.Add(bull);
             }
@@ -110,6 +136,29 @@ public class GameEngine
             {
                 drawingObjects.Add(_gameObjects[i]);
             }
+        }
+
+        for (int n = 0; n < drawingObjects.Count; n++)
+        {
+            for (int m = 0; m < drawingObjects.Count; m++)
+            {
+                if (n != m)
+                {
+                    if (drawingObjects[n].X == drawingObjects[m].X &&
+                        drawingObjects[n].Y == drawingObjects[m].Y)
+                    {
+                        if (drawingObjects[m] is Box)
+                        {
+                            objectsToRemove.Add(drawingObjects[m]);
+                        }
+                    }
+                }
+            }
+        }
+
+        for (int i = 0; i < objectsToRemove.Count; i++)
+        {
+            this._gameObjects.Remove(objectsToRemove[i]);
         }
 
         char[,] frame = new char[yCount, xCount];

@@ -1,14 +1,22 @@
 using System;
+using System.Net.Http;
 using System.Globalization;
 using System.Runtime.InteropServices;
 using System.Runtime.Serialization.Formatters;
 using System.Xml;
 using PalmTree.Items;
+using System.Collections.Specialized;
+using Microsoft.VisualBasic;
+using System.Net.NetworkInformation;
+using System.Security.Cryptography.X509Certificates;
 
 namespace PalmTree.Engine;
 
 public class GameEngine
 {
+    private static readonly CancellationTokenSource cts = new CancellationTokenSource();
+
+    public string NickName;
 
     public int yCount = 20;
     public int xCount = 120;
@@ -25,11 +33,27 @@ public class GameEngine
     public List<Entity> entities = new List<Entity>();
     private Item _player = new Item("Player",'@');
 
+    NameValueCollection data;
 
     //---------------------------------------Main-------------------------------------------------
 
+    #region Main
     public GameEngine()
     {
+        Console.CancelKeyPress += (sender, args) => Exit();
+
+        //
+        string url = "http://127.0.0.1:8000/mmo/join/";
+
+        // using(var client = new HttpClient()){
+        //     var endpoint = new Uri(url);
+        //     var newPost = new Post(){
+        //         nickname = NickName;
+        //     };
+        //     var newPostJson
+        // }
+
+
         //Items creation
         this.entities.Add(_player);
         this.entities.Add(new Item("Box",'+', 16, 5));
@@ -48,6 +72,9 @@ public class GameEngine
             
         }
     }
+
+    
+
     public void Run()
     {
         while(isRunning){
@@ -55,8 +82,10 @@ public class GameEngine
             DrawFrame();
             
             //Debug
+            Console.WriteLine("Nickname:" + NickName);
             Console.WriteLine("GameObjects: " + entities.Count);
             Console.WriteLine("Frame: " + _count);
+            Console.WriteLine("Data: " + data);
             _count++;
 
             if (Console.KeyAvailable)
@@ -68,8 +97,11 @@ public class GameEngine
 
             System.Threading.Thread.Sleep(frameRate);
             Console.Clear();
+
         }
+
     }
+    #endregion
 
     //-----------------------------------------------------------------------------------------------
 
@@ -87,6 +119,7 @@ public class GameEngine
             Console.WriteLine(line);
         }
     }
+
     private char[,] GetFrame()
     {
         char[,] frame = new char[yCount, xCount];
@@ -123,6 +156,7 @@ public class GameEngine
         {
             case ConsoleKey.Q:
                 isRunning = false;
+                Exit();
                 break;
             case ConsoleKey.RightArrow:
 
@@ -165,6 +199,17 @@ public class GameEngine
         entities.Add(new Bullet(_gm:this, _xDir:lastXInput, _yDir:lastYInput, 
                                 _x:_player.X, _y:_player.Y));
 
+    }
+
+    private void Exit(){
+        
+        //Log exit time
+        string r = File.ReadAllText("log.txt");
+        r += "\n" + System.DateTime.Now + " # Exit!";
+        File.WriteAllText("log.txt", r);
+
+        Console.WriteLine("Exiting...");
+        cts.Cancel();
     }
 
 }

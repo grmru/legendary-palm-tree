@@ -43,11 +43,6 @@ public class Bullet : Entity
     public Bullet(GameEngine _gm, int _xDir, int _yDir,
                     string _n = "Bullet", char _c = '*', int _x = 0, int _y = 0) : base(_n, _c, _x, _y)
     {
-        this._char = _c;
-        this.itemName = _n;
-        this.X = _x;
-        this.Y = _y;
-
         this.gm = _gm;
         this.xDir = _xDir;
         this.yDir = _yDir;
@@ -61,7 +56,6 @@ public class Bullet : Entity
 
         //Destroy if hit
         if(Hit() || OutOfBounds()) gm.entities.Remove(this);
-        // if(OutOfBounds()) gm.entities.Remove(this);
     }
 
     private bool Hit(){

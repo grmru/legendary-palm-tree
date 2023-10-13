@@ -23,7 +23,7 @@ public class GameEngine
     int _count = 0;
 
     public List<Entity> entities = new List<Entity>();
-    private Item _player;
+    private Item _player = new Item("Player",'@');
 
 
     //---------------------------------------Main-------------------------------------------------
@@ -31,7 +31,7 @@ public class GameEngine
     public GameEngine()
     {
         //Items creation
-        this.entities.Add(new Item("Player",'@'));
+        this.entities.Add(_player);
         this.entities.Add(new Item("Box",'+', 16, 5));
         this.entities.Add(new Item("Box",'+', 16, 6));
         this.entities.Add(new Item("Box",'+', 16, 7));
@@ -64,7 +64,7 @@ public class GameEngine
                 Input();
             }
 
-            foreach(Entity e in entities) e.Do();
+            foreach(Entity e in entities.ToList()) e.Do();
 
             System.Threading.Thread.Sleep(frameRate);
             Console.Clear();
@@ -117,7 +117,7 @@ public class GameEngine
 
     private void Input(){
 
-    ConsoleKeyInfo key = Console.ReadKey(true);
+        ConsoleKeyInfo key = Console.ReadKey(true);
 
         switch(key.Key)
         {

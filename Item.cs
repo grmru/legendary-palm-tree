@@ -70,7 +70,7 @@ public class Bullet : Entity
 
         foreach(Entity e in gm.entities){
             if(!(e is Bullet) && e.itemName != "Player" &&
-                e.X == this.X && e.Y == e.Y) val = true;
+                e.X == this.X && e.Y == this.Y) val = true;
         }
 
         return val;

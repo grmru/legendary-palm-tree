@@ -1,4 +1,5 @@
 ﻿using System;
+using PalmTree.Engine;
 
 namespace PalmTree;
 
@@ -6,6 +7,7 @@ public class Program
 {
     public static void Main()
     {
-        Console.WriteLine("Hi");
+        GameEngine game = new GameEngine();
+        game.Run();
     }
 }

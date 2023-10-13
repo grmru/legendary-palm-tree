@@ -2,6 +2,7 @@ using System;
 using System.Globalization;
 using System.Runtime.InteropServices;
 using System.Runtime.Serialization.Formatters;
+using System.Xml;
 using PalmTree.Items;
 
 namespace PalmTree.Engine;
@@ -15,11 +16,26 @@ public class GameEngine
     
     int _count = 0;
 
-    private Items.Item _player;
+    private List<Item> entities = new List<Item>();
+    private Item _player;
 
     public GameEngine()
     {
-        this._player = new Item();
+        //Items creation
+        this.entities.Add(new Item("Player",'@'));
+        this.entities.Add(new Item("Box",'+', 2, 5));
+        this.entities.Add(new Item("Box",'+', 5, 5));
+
+
+        //Player set
+        foreach(Item i in entities){
+            if(i.itemName == "Player"){
+                this._player = i;
+                // break;
+            }
+            
+        }
+        // this._player = new Item('@');
     }
     public void Run()
     {
@@ -28,7 +44,7 @@ public class GameEngine
         while(isRunning){
         
             DrawFrame();
-            Console.WriteLine(_count);
+            Console.WriteLine("FPS: " + _count);
             _count++;
 
             if (Console.KeyAvailable)
@@ -77,19 +93,23 @@ public class GameEngine
     private char[,] GetFrame()
     {
         char[,] frame = new char[yCount, xCount];
-        for (int i = 0; i < yCount; i++)
+        for (int y = 0; y < yCount; y++)
         {
-            for (int j = 0; j < xCount; j++)
+            for (int x = 0; x < xCount; x++)
             {
-                if (this._player.X == j &&
-                    this._player.Y == i)
-                {
-                    frame[i, j] = '@';
+                
+                //Render all objects at once
+                for(int e = 0; e < entities.Count; e++){
+                    if(entities[e].X == x &&
+                        entities[e].Y == y)
+                    {
+                        frame[y, x] = entities[e]._char;
+                        break;
+                    }
+                    else{
+                        frame[y, x] = '.';
+                    }
                 }
-                else{
-                    frame[i, j] = '.';
-                }
-
                 
             }
         }

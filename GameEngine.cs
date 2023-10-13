@@ -9,74 +9,71 @@ namespace PalmTree.Engine;
 
 public class GameEngine
 {
-    int yCount = 20;
-    int xCount = 120;
+
+    public int yCount = 20;
+    public int xCount = 120;
+
+    int frameRate = 120;
 
     bool isRunning = true;
     
+    int lastXInput = 1;
+    int lastYInput;
+
     int _count = 0;
 
-    private List<Item> entities = new List<Item>();
+    public List<Entity> entities = new List<Entity>();
     private Item _player;
+
+
+    //---------------------------------------Main-------------------------------------------------
 
     public GameEngine()
     {
         //Items creation
         this.entities.Add(new Item("Player",'@'));
-        this.entities.Add(new Item("Box",'+', 2, 5));
-        this.entities.Add(new Item("Box",'+', 5, 5));
+        this.entities.Add(new Item("Box",'+', 16, 5));
+        this.entities.Add(new Item("Box",'+', 16, 6));
+        this.entities.Add(new Item("Box",'+', 16, 7));
+        this.entities.Add(new Item("Box",'+', 16, 8));
+        this.entities.Add(new Item("Box",'+', 16, 9));
 
 
         //Player set
         foreach(Item i in entities){
             if(i.itemName == "Player"){
                 this._player = i;
-                // break;
+                break;
             }
             
         }
-        // this._player = new Item('@');
     }
     public void Run()
     {
-        isRunning = true;
-
         while(isRunning){
         
             DrawFrame();
-            Console.WriteLine("FPS: " + _count);
+            
+            //Debug
+            Console.WriteLine("GameObjects: " + entities.Count);
+            Console.WriteLine("Frame: " + _count);
             _count++;
 
             if (Console.KeyAvailable)
             {
-                ConsoleKeyInfo key = Console.ReadKey(true);
-
-                switch(key.Key)
-                {
-                    case ConsoleKey.Q:
-                        isRunning = false;
-                        break;
-                    case ConsoleKey.RightArrow:
-                        this._player.X++;
-                        break;
-                    case ConsoleKey.LeftArrow:
-                        this._player.X--;
-                        break;
-                    case ConsoleKey.UpArrow:
-                        this._player.Y--;
-                        break;
-                    case ConsoleKey.DownArrow:
-                        this._player.Y++;
-                        break;
-                    default:
-                        break; 
-                }
+                Input();
             }
 
-            System.Threading.Thread.Sleep(100);
+            foreach(Entity e in entities) e.Do();
+
+            System.Threading.Thread.Sleep(frameRate);
             Console.Clear();
         }
     }
+
+    //-----------------------------------------------------------------------------------------------
+
+    #region FrameRender
     private void DrawFrame()
     {
         var frm = GetFrame();
@@ -115,4 +112,59 @@ public class GameEngine
         }
         return frame;
     }
+    #endregion
+
+
+    private void Input(){
+
+    ConsoleKeyInfo key = Console.ReadKey(true);
+
+        switch(key.Key)
+        {
+            case ConsoleKey.Q:
+                isRunning = false;
+                break;
+            case ConsoleKey.RightArrow:
+
+                lastXInput = 1;
+                lastYInput = 0;
+
+                this._player.X++;
+                break;
+            case ConsoleKey.LeftArrow:
+
+                lastXInput = -1;
+                lastYInput = 0;
+
+                this._player.X--;
+                break;
+            case ConsoleKey.UpArrow:
+
+                lastXInput = 0;
+                lastYInput = -1;
+
+                this._player.Y--;
+                break;
+            case ConsoleKey.DownArrow:
+
+                lastXInput = 0;
+                lastYInput = 1;
+
+                this._player.Y++;
+                break;
+            case ConsoleKey.Spacebar:
+                Shoot();
+                break;
+            default:
+                break; 
+        }
+    }
+
+    private void Shoot(){
+
+        entities.Add(new Bullet(_gm:this, _xDir:lastXInput, _yDir:lastYInput, 
+                                _x:_player.X, _y:_player.Y));
+
+    }
+
 }

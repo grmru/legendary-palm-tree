@@ -11,8 +11,13 @@ public class Program
     {
         
 
-        Console.WriteLine("Enter Nickname: ");
-        string nn = Console.ReadLine();
+        string nn = "";
+
+        while(nn.Contains('_') || nn.Contains('-') || nn.Length <= 2){
+            Console.Clear();
+            Console.WriteLine("Enter Nickname: ");
+            nn = Console.ReadLine();
+        }
 
         GameEngine game = new GameEngine(nn);
         game.Run();

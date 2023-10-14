@@ -38,6 +38,8 @@ public class GameEngine
 
     private string _p_data;
 
+    private string _mainUrl = "https://ce12-80-251-226-62.ngrok-free.app/";
+
     //---------------------------------------Main-------------------------------------------------
 
     #region Main
@@ -49,7 +51,7 @@ public class GameEngine
 
         #region Join
 
-        string url = "https://bbcc-80-251-226-62.ngrok-free.app/mmo/join/";
+        string url = _mainUrl + "mmo/join/";
         
         using (var wb = new WebClient())
         {
@@ -88,8 +90,9 @@ public class GameEngine
             DrawFrame();
             
             
+            #region Online players get
             //Get Players
-            _p_data = new WebClient().DownloadString("https://bbcc-80-251-226-62.ngrok-free.app/mmo/getPlayers/");
+            _p_data = new WebClient().DownloadString(_mainUrl + "mmo/getPlayers/");
             
             //Split Players
             string[] temp_p_data = _p_data.Split('_');
@@ -112,6 +115,7 @@ public class GameEngine
 
 
             }
+            #endregion
 
             
             //Debug
@@ -207,7 +211,7 @@ public class GameEngine
                 break;
             case ConsoleKey.RightArrow:
 
-                // if(this._player.X >= xCount) return;
+                if(this._player.X == xCount-1) return;
                 lastXInput = 1;
                 lastYInput = 0;
 
@@ -215,7 +219,7 @@ public class GameEngine
                 break;
             case ConsoleKey.LeftArrow:
 
-                // if(this._player.X <= 0) return;
+                if(this._player.X == 0) return;
                 lastXInput = -1;
                 lastYInput = 0;
 
@@ -223,7 +227,7 @@ public class GameEngine
                 break;
             case ConsoleKey.UpArrow:
 
-                // if(this._player.Y <= yCount) return;
+                if(this._player.Y == 0) return;
                 lastXInput = 0;
                 lastYInput = -1;
 
@@ -231,19 +235,21 @@ public class GameEngine
                 break;
             case ConsoleKey.DownArrow:
 
-                // if(this._player.Y >= 0) return;
+                if(this._player.Y == yCount-1) return;
                 lastXInput = 0;
                 lastYInput = 1;
 
                 this._player.Y++;
                 break;
-            case ConsoleKey.Spacebar:
-                Shoot();
-                break;
+            // case ConsoleKey.Spacebar:
+            //     Shoot();
+            //     break;
             default:
                 break;
         }
-        new WebClient().DownloadString("https://bbcc-80-251-226-62.ngrok-free.app/mmo/move/" + NickName + "-" + _player.X + "-" + _player.Y);
+
+        //Send local pos to server
+        new WebClient().DownloadString(_mainUrl + "mmo/move/" + NickName + "-" + _player.X + "-" + _player.Y);
 
     }
 
@@ -262,10 +268,11 @@ public class GameEngine
         File.WriteAllText("log.txt", r);
 
         //Delete from server
-        new WebClient().DownloadString("https://bbcc-80-251-226-62.ngrok-free.app/mmo/kill/" + NickName);
+        new WebClient().DownloadString(_mainUrl + "mmo/kill/" + NickName);
 
         Console.WriteLine("Exiting...");
         cts.Cancel();
+        Console.Clear();
     }
 
 }

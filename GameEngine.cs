@@ -1,14 +1,16 @@
 using System;
-using System.Net.Http;
+using System.Net;
+using System.Text;
+using System.Text.Json;
 using System.Globalization;
 using System.Runtime.InteropServices;
 using System.Runtime.Serialization.Formatters;
 using System.Xml;
 using PalmTree.Items;
-using System.Collections.Specialized;
 using Microsoft.VisualBasic;
 using System.Net.NetworkInformation;
 using System.Security.Cryptography.X509Certificates;
+using System.Collections.Specialized;
 
 namespace PalmTree.Engine;
 
@@ -16,7 +18,7 @@ public class GameEngine
 {
     private static readonly CancellationTokenSource cts = new CancellationTokenSource();
 
-    public string NickName;
+    private string NickName = "Debug_Nickname";
 
     public int yCount = 20;
     public int xCount = 120;
@@ -32,27 +34,33 @@ public class GameEngine
 
     public List<Entity> entities = new List<Entity>();
     private Item _player = new Item("Player",'@');
+    private List<Item> other_players = new List<Item>();
 
-    NameValueCollection data;
+    private string _p_data;
 
     //---------------------------------------Main-------------------------------------------------
 
     #region Main
-    public GameEngine()
+    public GameEngine(string _nn)
     {
         Console.CancelKeyPress += (sender, args) => Exit();
 
-        //
-        string url = "http://127.0.0.1:8000/mmo/join/";
+        this.NickName = _nn;
 
-        // using(var client = new HttpClient()){
-        //     var endpoint = new Uri(url);
-        //     var newPost = new Post(){
-        //         nickname = NickName;
-        //     };
-        //     var newPostJson
-        // }
+        #region Join
 
+        string url = "https://bbcc-80-251-226-62.ngrok-free.app/mmo/join/";
+        
+        using (var wb = new WebClient())
+        {
+            var data = new NameValueCollection();
+
+            data["nickname"] = NickName;
+
+            var response = wb.UploadValues(url, "POST", data);
+            string result = Encoding.UTF8.GetString(response);
+        }
+        #endregion
 
         //Items creation
         this.entities.Add(_player);
@@ -73,25 +81,51 @@ public class GameEngine
         }
     }
 
-    
-
     public void Run()
     {
         while(isRunning){
         
             DrawFrame();
             
+            
+            //Get Players
+            _p_data = new WebClient().DownloadString("https://bbcc-80-251-226-62.ngrok-free.app/mmo/getPlayers/");
+            
+            //Split Players
+            string[] temp_p_data = _p_data.Split('_');
+            temp_p_data = temp_p_data.Take(temp_p_data.Length - 1).ToArray();
+
+            //Set Players
+            other_players.Clear();
+            for(int i=0;i<temp_p_data.Length;i++){
+                //Get player variables
+                Console.WriteLine(temp_p_data[i]);
+
+                string[] temp_p_var = temp_p_data[i].Split('-');
+
+                // for(int v=0;v<temp_p_var.Length;v++){
+                // }
+
+                //Check if isn't local player
+                // if(temp_p_var[0] != NickName)
+                    other_players.Add(new Item(temp_p_var[0], '@', int.Parse(temp_p_var[1]), int.Parse(temp_p_var[2])));
+
+
+            }
+
+            
             //Debug
             Console.WriteLine("Nickname:" + NickName);
             Console.WriteLine("GameObjects: " + entities.Count);
             Console.WriteLine("Frame: " + _count);
-            Console.WriteLine("Data: " + data);
+            // Console.WriteLine("Data: " + );
             _count++;
 
             if (Console.KeyAvailable)
             {
                 Input();
             }
+
 
             foreach(Entity e in entities.ToList()) e.Do();
 
@@ -140,6 +174,19 @@ public class GameEngine
                         frame[y, x] = '.';
                     }
                 }
+
+                //Render all other_players at once
+                for(int e = 0; e < other_players.Count; e++){
+                    if(other_players[e].X == x &&
+                        other_players[e].Y == y)
+                    {
+                        frame[y, x] = other_players[e]._char;
+                        break;
+                    }
+                    else{
+                        frame[y, x] = '.';
+                    }
+                }
                 
             }
         }
@@ -160,6 +207,7 @@ public class GameEngine
                 break;
             case ConsoleKey.RightArrow:
 
+                // if(this._player.X >= xCount) return;
                 lastXInput = 1;
                 lastYInput = 0;
 
@@ -167,6 +215,7 @@ public class GameEngine
                 break;
             case ConsoleKey.LeftArrow:
 
+                // if(this._player.X <= 0) return;
                 lastXInput = -1;
                 lastYInput = 0;
 
@@ -174,6 +223,7 @@ public class GameEngine
                 break;
             case ConsoleKey.UpArrow:
 
+                // if(this._player.Y <= yCount) return;
                 lastXInput = 0;
                 lastYInput = -1;
 
@@ -181,6 +231,7 @@ public class GameEngine
                 break;
             case ConsoleKey.DownArrow:
 
+                // if(this._player.Y >= 0) return;
                 lastXInput = 0;
                 lastYInput = 1;
 
@@ -190,8 +241,10 @@ public class GameEngine
                 Shoot();
                 break;
             default:
-                break; 
+                break;
         }
+        new WebClient().DownloadString("https://bbcc-80-251-226-62.ngrok-free.app/mmo/move/" + NickName + "-" + _player.X + "-" + _player.Y);
+
     }
 
     private void Shoot(){
@@ -207,6 +260,9 @@ public class GameEngine
         string r = File.ReadAllText("log.txt");
         r += "\n" + System.DateTime.Now + " # Exit!";
         File.WriteAllText("log.txt", r);
+
+        //Delete from server
+        new WebClient().DownloadString("https://bbcc-80-251-226-62.ngrok-free.app/mmo/kill/" + NickName);
 
         Console.WriteLine("Exiting...");
         cts.Cancel();

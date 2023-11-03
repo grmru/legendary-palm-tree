@@ -87,36 +87,16 @@ public class GameEngine
     public void Run()
     {
 
+        System.Threading.Thread th = new Thread(GetPlayersData);
+        th.Start();
+
         while(isRunning){
         
             DrawFrame();
             
             
             #region Online players get
-            //Get Players
-            _p_data = new WebClient().DownloadString(_mainUrl + "mmo/getPlayers/");
-            
-            //Split Players
-            string[] temp_p_data = _p_data.Split('_');
-            temp_p_data = temp_p_data.Take(temp_p_data.Length - 1).ToArray();
-
-            //Set Players
-            other_players.Clear();
-            for(int i=0;i<temp_p_data.Length;i++){
-                //Get player variables
-                Console.WriteLine(temp_p_data[i]);
-
-                string[] temp_p_var = temp_p_data[i].Split('-');
-
-                // for(int v=0;v<temp_p_var.Length;v++){
-                // }
-
-                //Check if isn't local player
-                // if(temp_p_var[0] != NickName)
-                    other_players.Add(new Item(temp_p_var[0], '@', int.Parse(temp_p_var[1]), int.Parse(temp_p_var[2])));
-
-
-            }
+            //GetPlayersData();
             #endregion
 
             
@@ -138,11 +118,43 @@ public class GameEngine
 
             System.Threading.Thread.Sleep(frameRate);
             Console.Clear();
-
         }
 
     }
     #endregion
+
+    public void GetPlayersData()
+    {
+        while(isRunning)
+        {
+            //Get Players
+            _p_data = new WebClient().DownloadString(_mainUrl + "mmo/getPlayers/");
+
+            //Split Players
+            string[] temp_p_data = _p_data.Split('_');
+            temp_p_data = temp_p_data.Take(temp_p_data.Length - 1).ToArray();
+
+            //Set Players
+            other_players.Clear();
+            for (int i = 0; i < temp_p_data.Length; i++)
+            {
+                //Get player variables
+                //Console.WriteLine(temp_p_data[i]);
+
+                string[] temp_p_var = temp_p_data[i].Split('-');
+
+                // for(int v=0;v<temp_p_var.Length;v++){
+                // }
+
+                //Check if isn't local player
+                // if(temp_p_var[0] != NickName)
+                other_players.Add(new Item(temp_p_var[0], '@', int.Parse(temp_p_var[1]), int.Parse(temp_p_var[2])));
+            }
+
+            System.Threading.Thread.Sleep(50);
+        }
+    }
+
 
     //-----------------------------------------------------------------------------------------------
 
@@ -254,10 +266,17 @@ public class GameEngine
                 break;
         }
 
+        System.Threading.Thread th = new Thread(SendPlayerData);
+        th.Start();
+    }
+
+    public void SendPlayerData()
+    {
         //Send local pos to server
         new WebClient().DownloadString(_mainUrl + "mmo/move/" + NickName + "-" + _player.X + "-" + _player.Y);
-
     }
+
+    
 
     private void Shoot(){
 

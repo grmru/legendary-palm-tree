@@ -81,10 +81,12 @@ public class GameEngine
             }
             
         }
+
     }
 
     public void Run()
     {
+
         while(isRunning){
         
             DrawFrame();
@@ -123,6 +125,7 @@ public class GameEngine
             Console.WriteLine("GameObjects: " + entities.Count);
             Console.WriteLine("Frame: " + _count);
             // Console.WriteLine("Data: " + );
+
             _count++;
 
             if (Console.KeyAvailable)
@@ -147,6 +150,7 @@ public class GameEngine
     private void DrawFrame()
     {
         var frm = GetFrame();
+
         for (int i = 0; i < yCount; i++)
         {
             char[] line = new char[xCount];
@@ -154,9 +158,11 @@ public class GameEngine
             {
                 line[j] = frm[i, j];
             }
+
             Console.WriteLine(line);
         }
     }
+
 
     private char[,] GetFrame()
     {

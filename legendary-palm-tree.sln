@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.5.002.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "legendary-palm-tree", "legendary-palm-tree.csproj", "{1854D550-7D5B-4910-AACC-8F540F6AC19E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "legendary-palm-tree", "legendary-palm-tree.csproj", "{DEDBFFC6-E43D-432D-8C1B-170C0B7D8150}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -11,15 +11,15 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{1854D550-7D5B-4910-AACC-8F540F6AC19E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{1854D550-7D5B-4910-AACC-8F540F6AC19E}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{1854D550-7D5B-4910-AACC-8F540F6AC19E}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{1854D550-7D5B-4910-AACC-8F540F6AC19E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DEDBFFC6-E43D-432D-8C1B-170C0B7D8150}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DEDBFFC6-E43D-432D-8C1B-170C0B7D8150}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DEDBFFC6-E43D-432D-8C1B-170C0B7D8150}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DEDBFFC6-E43D-432D-8C1B-170C0B7D8150}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		SolutionGuid = {88F0E48D-970C-4E05-B374-2562D6A4019B}
+		SolutionGuid = {D6BB305D-A2DA-480F-B58E-A454BA481C34}
 	EndGlobalSection
 EndGlobal

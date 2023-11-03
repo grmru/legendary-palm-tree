@@ -19,6 +19,9 @@ public class GameEngine
     private static readonly CancellationTokenSource cts = new CancellationTokenSource();
 
     private string NickName = "Debug_Nickname";
+    private bool onlineMode = false;
+
+    private char emptyTile = ' ';
 
     public int yCount = 20;
     public int xCount = 120;
@@ -38,29 +41,36 @@ public class GameEngine
 
     private string _p_data;
 
-    private string _mainUrl = "https://25d6-91-227-189-186.ngrok-free.app/";
+    private string _mainUrl = "";
 
     //---------------------------------------Main-------------------------------------------------
 
     #region Main
-    public GameEngine(string _nn)
+    public GameEngine(bool _onlineMode = true, string _nn = "")
     {
         Console.CancelKeyPress += (sender, args) => Exit();
 
         this.NickName = _nn;
+        this.onlineMode = _onlineMode;
 
         #region Join
+        if(onlineMode){
 
-        string url = _mainUrl + "mmo/join/";
-        
-        using (var wb = new WebClient())
-        {
-            var data = new NameValueCollection();
+            //Update url link
+            new WebClient().DownloadFile("https://www.dropbox.com/scl/fi/dlsex0v49fgzeb5m80fk7/cfg.txt?rlkey=hqvkg2p9qvi3ezpthwab1zo96&dl=1", "cfg.txt");
+            _mainUrl = File.ReadAllText("cfg.txt");
 
-            data["nickname"] = NickName;
+            string url = _mainUrl + "mmo/join/";
+            
+            using (var wb = new WebClient())
+            {
+                var data = new NameValueCollection();
 
-            var response = wb.UploadValues(url, "POST", data);
-            string result = Encoding.UTF8.GetString(response);
+                data["nickname"] = NickName;
+
+                var response = wb.UploadValues(url, "POST", data);
+                string result = Encoding.UTF8.GetString(response);
+            }
         }
         #endregion
 
@@ -86,9 +96,10 @@ public class GameEngine
 
     public void Run()
     {
-
-        System.Threading.Thread th = new Thread(GetPlayersData);
-        th.Start();
+        if(onlineMode){
+            System.Threading.Thread th = new Thread(GetPlayersData);
+            th.Start();
+        }
 
         while(isRunning){
         
@@ -101,7 +112,7 @@ public class GameEngine
 
             
             //Debug
-            Console.WriteLine("Nickname:" + NickName);
+            if(onlineMode) Console.WriteLine("Nickname:" + NickName);
             Console.WriteLine("GameObjects: " + entities.Count);
             Console.WriteLine("Frame: " + _count);
             // Console.WriteLine("Data: " + );
@@ -112,7 +123,6 @@ public class GameEngine
             {
                 Input();
             }
-
 
             foreach(Entity e in entities.ToList()) e.Do();
 
@@ -128,6 +138,7 @@ public class GameEngine
         while(isRunning)
         {
             //Get Players
+            // _p_data = new WebClient().DownloadString(_mainUrl + "mmo/getPlayers/" + NickName + "-" + _player.X + "-" + _player.Y);
             _p_data = new WebClient().DownloadString(_mainUrl + "mmo/getPlayers/");
 
             //Split Players
@@ -147,8 +158,8 @@ public class GameEngine
                 // }
 
                 //Check if isn't local player
-                // if(temp_p_var[0] != NickName)
-                other_players.Add(new Item(temp_p_var[0], '@', int.Parse(temp_p_var[1]), int.Parse(temp_p_var[2])));
+                if(temp_p_var[0] != NickName)
+                    other_players.Add(new Item(temp_p_var[0], '@', int.Parse(temp_p_var[1]), int.Parse(temp_p_var[2])));
             }
 
             System.Threading.Thread.Sleep(50);
@@ -193,20 +204,31 @@ public class GameEngine
                         break;
                     }
                     else{
-                        frame[y, x] = '.';
+                        frame[y, x] = emptyTile;
                     }
                 }
 
-                //Render all other_players at once
-                for(int e = 0; e < other_players.Count; e++){
-                    if(other_players[e].X == x &&
-                        other_players[e].Y == y)
-                    {
-                        frame[y, x] = other_players[e]._char;
-                        break;
-                    }
-                    else{
-                        frame[y, x] = '.';
+                if(onlineMode){
+
+                    //Render all other_players at once
+                    for(int e = 0; e < other_players.Count; e++){
+                        if(other_players[e].X == x &&
+                            other_players[e].Y == y)
+                        {
+                            frame[y, x] = other_players[e]._char;
+                            break;
+                        }
+                        else{
+                            for(int t=0;t<entities.Count;t++){
+                                if(entities[t].X == x &&
+                                    entities[t].Y == y)
+                                {
+                                    frame[y, x] = entities[t]._char;
+                                    break;
+                                }
+                                else frame[y, x] = emptyTile;
+                            }
+                        }
                     }
                 }
                 
@@ -226,7 +248,7 @@ public class GameEngine
             case ConsoleKey.Q:
                 isRunning = false;
                 Exit();
-                break;
+                return;
             case ConsoleKey.RightArrow:
 
                 if(this._player.X == xCount-1) return;
@@ -259,15 +281,18 @@ public class GameEngine
 
                 this._player.Y++;
                 break;
-            // case ConsoleKey.Spacebar:
-            //     Shoot();
-            //     break;
+            case ConsoleKey.Spacebar:
+                Shoot();
+                break;
             default:
                 break;
         }
 
-        System.Threading.Thread th = new Thread(SendPlayerData);
-        th.Start();
+        if(onlineMode){
+
+            System.Threading.Thread th = new Thread(SendPlayerData);
+            th.Start();
+        }
     }
 
     public void SendPlayerData()
@@ -293,7 +318,7 @@ public class GameEngine
         File.WriteAllText("log.txt", r);
 
         //Delete from server
-        new WebClient().DownloadString(_mainUrl + "mmo/kill/" + NickName);
+        if(onlineMode) new WebClient().DownloadString(_mainUrl + "mmo/kill/" + NickName);
 
         Console.WriteLine("Exiting...");
         cts.Cancel();

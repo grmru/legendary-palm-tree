@@ -38,7 +38,7 @@ public class GameEngine
 
     private string _p_data;
 
-    private string _mainUrl = "https://ce12-80-251-226-62.ngrok-free.app/";
+    private string _mainUrl = "https://25d6-91-227-189-186.ngrok-free.app/";
 
     //---------------------------------------Main-------------------------------------------------
 

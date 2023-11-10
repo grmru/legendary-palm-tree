@@ -76,11 +76,42 @@ public class GameEngine
 
         //Items creation
         this.entities.Add(_player);
-        this.entities.Add(new Item("Box",'+', 16, 5));
-        this.entities.Add(new Item("Box",'+', 16, 6));
-        this.entities.Add(new Item("Box",'+', 16, 7));
-        this.entities.Add(new Item("Box",'+', 16, 8));
-        this.entities.Add(new Item("Box",'+', 16, 9));
+        this.entities.Add(new Item("Wall",'|', 24, 4));
+        this.entities.Add(new Item("Wall",'|', 24, 5));
+        this.entities.Add(new Item("Wall",'|', 24, 6));
+        this.entities.Add(new Item("Wall",'|', 24, 9));
+        this.entities.Add(new Item("Wall",'|', 24, 10));
+        this.entities.Add(new Item("Wall",'|', 24, 11));
+        this.entities.Add(new Item("uWall",'T', 25, 4));
+        this.entities.Add(new Item("uWall",'T', 26, 4));
+        this.entities.Add(new Item("uWall",'T', 27, 4));
+        this.entities.Add(new Item("uWall",'T', 30, 4));
+        this.entities.Add(new Item("uWall",'T', 31, 4));
+        this.entities.Add(new Item("uWall",'T', 32, 4));
+        this.entities.Add(new Item("dWall",'Z', 25, 11));
+        this.entities.Add(new Item("dWall",'Z', 26, 11));
+        this.entities.Add(new Item("dWall",'Z', 27, 11));
+        this.entities.Add(new Item("dWall",'Z', 30, 11));
+        this.entities.Add(new Item("dWall",'Z', 31, 11));
+        this.entities.Add(new Item("dWall",'Z', 32, 11));
+        this.entities.Add(new Item("Wall",'|', 33, 4));
+        this.entities.Add(new Item("Wall",'|', 33, 5));
+        this.entities.Add(new Item("Wall",'|', 33, 6));
+        this.entities.Add(new Item("Wall",'|', 33, 9));
+        this.entities.Add(new Item("Wall",'|', 33, 10));
+        this.entities.Add(new Item("Wall",'|', 33, 11));
+        this.entities.Add(new Item("Box",'+', 34, 4));
+        this.entities.Add(new Item("Box",'+', 34, 3));
+        this.entities.Add(new Item("Box",'+', 33, 3));
+        this.entities.Add(new Item("Box",'+', 23, 4));
+        this.entities.Add(new Item("Box",'+', 23, 3));
+        this.entities.Add(new Item("Box",'+', 24, 3));
+        this.entities.Add(new Item("Box",'+', 23, 11));
+        this.entities.Add(new Item("Box",'+', 23, 12));
+        this.entities.Add(new Item("Box",'+', 24, 12));
+        this.entities.Add(new Item("Box",'+', 34, 11));
+        this.entities.Add(new Item("Box",'+', 34, 12));
+        this.entities.Add(new Item("Box",'+', 33, 12));
 
 
         //Player set

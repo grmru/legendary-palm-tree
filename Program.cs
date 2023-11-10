@@ -28,7 +28,7 @@ public class Program
 
         while(nn.Contains('_') || nn.Contains('-') || nn.Length <= 2){
             Console.Clear();
-            Console.WriteLine("Enter Nickname: ");
+            Console.WriteLine("Enter Nickname (> 2): ");
             nn = Console.ReadLine();
         }
 

@@ -60,22 +60,8 @@ public class GameEngine
 
         #region Join
         if(onlineMode){
-
             //Update url link
-            new WebClient().DownloadFile("https://www.dropbox.com/scl/fi/dlsex0v49fgzeb5m80fk7/cfg.txt?rlkey=hqvkg2p9qvi3ezpthwab1zo96&dl=1", "cfg.txt");
-            _mainUrl = File.ReadAllText("cfg.txt");
-
-            string url = _mainUrl + "mmo/join/";
-            
-            using (var wb = new WebClient())
-            {
-                var data = new NameValueCollection();
-
-                data["nickname"] = NickName;
-
-                var response = wb.UploadValues(url, "POST", data);
-                string result = Encoding.UTF8.GetString(response);
-            }
+            _mainUrl = GetMainServerURL();
         }
         #endregion
 
@@ -87,16 +73,18 @@ public class GameEngine
         this.entities.Add(new Item("Box",'+', 16, 8));
         this.entities.Add(new Item("Box",'+', 16, 9));
 
-
         //Player set
         foreach(Item i in entities){
             if(i.itemName == "Player"){
                 this._player = i;
                 break;
             }
-            
         }
+    }
 
+    private string GetMainServerURL()
+    {
+        return "http://127.0.0.1:1234/";
     }
 
     public void Run()
@@ -106,21 +94,14 @@ public class GameEngine
             th.Start();
         }
 
-        while(isRunning){
-        
+        while(isRunning)
+        {
             DrawFrame();
-            
-            
-            #region Online players get
-            //GetPlayersData();
-            #endregion
-
             
             //Debug
             if(onlineMode) Console.WriteLine("Nickname:" + NickName);
             Console.WriteLine("GameObjects: " + entities.Count);
             Console.WriteLine("Frame: " + _count);
-            // Console.WriteLine("Data: " + );
 
             _count++;
 
@@ -129,7 +110,7 @@ public class GameEngine
                 Input();
             }
 
-            foreach(Entity e in entities.ToList()) e.Do();
+            foreach(Entity e in entities) e.Do();
 
             System.Threading.Thread.Sleep(frameRate);
             Console.Clear();
@@ -190,13 +171,7 @@ public class GameEngine
             other_players.Clear();
             for (int i = 0; i < temp_p_data.Length; i++)
             {
-                //Get player variables
-                //Console.WriteLine(temp_p_data[i]);
-
                 string[] temp_p_var = temp_p_data[i].Split('-');
-
-                // for(int v=0;v<temp_p_var.Length;v++){
-                // }
 
                 //Check if isn't local player
                 if(temp_p_var[0] != NickName)
@@ -227,7 +202,6 @@ public class GameEngine
         }
     }
 
-
     private char[,] GetFrame()
     {
         char[,] frame = new char[yCount, xCount];
@@ -235,33 +209,22 @@ public class GameEngine
         {
             for (int x = 0; x < xCount; x++)
             {
-                
-                //Render all objects at once
-                for(int e = 0; e < entities.Count; e++){
-                    if(entities[e].X == x &&
-                        entities[e].Y == y)
-                    {
-                        frame[y, x] = entities[e]._char;
-                        break;
-                    }
-                    else{
-                        frame[y, x] = emptyTile;
-                    }
-                }
-
-                if(onlineMode){
-
+                if (onlineMode)
+                {
                     //Render all other_players at once
-                    for(int e = 0; e < other_players.Count; e++){
-                        if(other_players[e].X == x &&
+                    for (int e = 0; e < other_players.Count; e++)
+                    {
+                        if (other_players[e].X == x &&
                             other_players[e].Y == y)
                         {
                             frame[y, x] = other_players[e]._char;
                             break;
                         }
-                        else{
-                            for(int t=0;t<entities.Count;t++){
-                                if(entities[t].X == x &&
+                        else
+                        {
+                            for (int t = 0; t < entities.Count; t++)
+                            {
+                                if (entities[t].X == x &&
                                     entities[t].Y == y)
                                 {
                                     frame[y, x] = entities[t]._char;
@@ -272,7 +235,23 @@ public class GameEngine
                         }
                     }
                 }
-                
+                else
+                {
+                    //Render all objects at once
+                    for (int e = 0; e < entities.Count; e++)
+                    {
+                        if (entities[e].X == x &&
+                            entities[e].Y == y)
+                        {
+                            frame[y, x] = entities[e]._char;
+                            break;
+                        }
+                        else
+                        {
+                            frame[y, x] = emptyTile;
+                        }
+                    }
+                }
             }
         }
         return frame;
@@ -337,13 +316,6 @@ public class GameEngine
         */
     }
 
-    //public void SendPlayerData()
-    //{
-    //    //Send local pos to server
-    //    new WebClient().DownloadString(_mainUrl + "mmo/move/" + NickName + "-" + _player.X + "-" + _player.Y);
-    //}
-
-    
 
     private void Shoot(){
 
@@ -352,19 +324,18 @@ public class GameEngine
 
     }
 
-    private void Exit(){
-        
-        //Log exit time
-        string r = File.ReadAllText("log.txt");
-        r += "\n" + System.DateTime.Now + " # Exit!";
-        File.WriteAllText("log.txt", r);
+    private void Exit() {
 
-        //Delete from server
-        //if(onlineMode) new WebClient().DownloadString(_mainUrl + "mmo/kill/" + NickName);
+        Log("Exit!");
 
         Console.WriteLine("Exiting...");
         cts.Cancel();
         Console.Clear();
+    }
+
+    private void Log(string msg)
+    {
+        File.AppendAllText("log.txt", System.Environment.NewLine + System.DateTime.Now + " # " + msg);
     }
 
 }

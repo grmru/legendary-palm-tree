@@ -30,7 +30,19 @@ namespace TEC.SimpleServer
             };
 
             var addr = IPAddress.Parse("127.0.0.1");
-            listener = new System.Net.Sockets.TcpListener(addr, 1234);
+            var port = 1234;
+
+            if (args.Length > 0)
+            {
+                addr = IPAddress.Parse(args[0]);
+            }
+
+            if (args.Length > 1)
+            {
+                port = int.Parse(args[1]);
+            }
+
+            listener = new System.Net.Sockets.TcpListener(addr, port);
             listener.Start();
 
             while (isRunning)

@@ -9,7 +9,6 @@ public class Program
 
     public static void Main()
     {
-        
         string nn = "";
         string onlineMode = "";
         GameEngine game;
@@ -20,22 +19,22 @@ public class Program
             onlineMode = Console.ReadLine();
         }
 
-        if(onlineMode == "n"){
+        if(onlineMode == "n")
+        {
             game = new GameEngine(_onlineMode:false);
             game.Run();
-            return;
         }
+        else
+        {
+            while(nn.Contains('_') || nn.Contains('-') || nn.Length <= 2){
+                Console.Clear();
+                Console.WriteLine("Enter Nickname (> 2): ");
+                nn = Console.ReadLine();
+            }
 
-        while(nn.Contains('_') || nn.Contains('-') || nn.Length <= 2){
-            Console.Clear();
-            Console.WriteLine("Enter Nickname (> 2): ");
-            nn = Console.ReadLine();
+            Console.WriteLine("Connecting to server...");
+            game = new GameEngine(_nn:nn);
+            game.Run();
         }
-
-        Console.WriteLine("Connecting to server...");
-        game = new GameEngine(_nn:nn);
-        game.Run();
-
     }
-
 }

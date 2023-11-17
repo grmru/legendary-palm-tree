@@ -46,24 +46,21 @@ public class GameEngine
 
     private string _p_data;
 
-    private string _mainUrl = "";
+    private string _addr = "";
+    private int _port = 0;
 
     //---------------------------------------Main-------------------------------------------------
 
     #region Main
-    public GameEngine(bool _onlineMode = true, string _nn = "")
+    public GameEngine(bool _onlineMode = true, string _nn = "", string _addr = "127.0.0.1", int _port = 1234)
     {
         Console.CancelKeyPress += (sender, args) => Exit();
 
         this.NickName = _nn;
         this.onlineMode = _onlineMode;
 
-        #region Join
-        if(onlineMode){
-            //Update url link
-            _mainUrl = GetMainServerURL();
-        }
-        #endregion
+        this._addr = _addr;
+        this._port = _port;
 
         //Items creation
         this.entities.Add(_player);
@@ -80,11 +77,6 @@ public class GameEngine
                 break;
             }
         }
-    }
-
-    private string GetMainServerURL()
-    {
-        return "http://127.0.0.1:1234/";
     }
 
     public void Run()
@@ -127,14 +119,12 @@ public class GameEngine
             string currentPlayerData = NickName + "-" + _player.X + "-" + _player.Y;
             Byte[] data = System.Text.Encoding.UTF8.GetBytes(currentPlayerData);
 
-            Int32 port = 1234;
-            TcpClient client = new TcpClient("127.0.0.1", port);
+            TcpClient client = new TcpClient(this._addr, this._port);
 
             NetworkStream stream = client.GetStream();
 
             // Send the message to the connected TcpServer.
             stream.Write(data, 0, data.Length);
-
 
             List<byte> bytes = new List<byte>();
             if (stream.CanRead)
@@ -209,6 +199,18 @@ public class GameEngine
         {
             for (int x = 0; x < xCount; x++)
             {
+
+                for (int t = 0; t < entities.Count; t++)
+                {
+                    if (entities[t].X == x &&
+                        entities[t].Y == y)
+                    {
+                        frame[y, x] = entities[t]._char;
+                        break;
+                    }
+                    else frame[y, x] = emptyTile;
+                }
+
                 if (onlineMode)
                 {
                     //Render all other_players at once
@@ -220,38 +222,9 @@ public class GameEngine
                             frame[y, x] = other_players[e]._char;
                             break;
                         }
-                        else
-                        {
-                            for (int t = 0; t < entities.Count; t++)
-                            {
-                                if (entities[t].X == x &&
-                                    entities[t].Y == y)
-                                {
-                                    frame[y, x] = entities[t]._char;
-                                    break;
-                                }
-                                else frame[y, x] = emptyTile;
-                            }
-                        }
                     }
                 }
-                else
-                {
-                    //Render all objects at once
-                    for (int e = 0; e < entities.Count; e++)
-                    {
-                        if (entities[e].X == x &&
-                            entities[e].Y == y)
-                        {
-                            frame[y, x] = entities[e]._char;
-                            break;
-                        }
-                        else
-                        {
-                            frame[y, x] = emptyTile;
-                        }
-                    }
-                }
+
             }
         }
         return frame;

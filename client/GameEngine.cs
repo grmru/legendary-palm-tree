@@ -42,7 +42,8 @@ public class GameEngine
 
     public List<Entity> entities = new List<Entity>();
     private Item _player = new Item("Player",'@');
-    private List<Item> other_players = new List<Item>();
+    //private List<Item> other_players = new List<Item>();
+    private Dictionary<string, Item> other_players = new Dictionary<string, Item>();
 
     private string _p_data;
 
@@ -112,7 +113,7 @@ public class GameEngine
                 Input();
             }
 
-            foreach(Entity e in entities) e.Do();
+            foreach(Entity e in entities.ToList()) e.Do();
 
             System.Threading.Thread.Sleep(frameRate);
             Console.Clear();
@@ -171,20 +172,29 @@ public class GameEngine
 
         //Split Players
         string[] temp_p_data = _p_data.Split('_');
-        temp_p_data = temp_p_data.Take(temp_p_data.Length - 1).ToArray();
+        //temp_p_data = temp_p_data.Take(temp_p_data.Length - 1).ToArray();
 
         //Set Players
-        other_players.Clear();
+        //other_players.Clear();
         for (int i = 0; i < temp_p_data.Length; i++)
         {
             string[] temp_p_var = temp_p_data[i].Split('-');
 
-            //Check if isn't local player
-            if (temp_p_var[0] != NickName)
-                other_players.Add(new Item(temp_p_var[0], '@', int.Parse(temp_p_var[1]), int.Parse(temp_p_var[2])));
+            //Check if isn't player
+            if (temp_p_var[0] == NickName)
+                continue;
+            
+            if (other_players.ContainsKey(temp_p_var[0]))
+            {
+                other_players[temp_p_var[0]].X = int.Parse(temp_p_var[1]);
+                other_players[temp_p_var[0]].Y = int.Parse(temp_p_var[2]);
+            }
+            else
+            {
+                other_players.Add(temp_p_var[0], new Item(temp_p_var[0], '@', int.Parse(temp_p_var[1]), int.Parse(temp_p_var[2])));
+            }
         }
     }
-
 
     //-----------------------------------------------------------------------------------------------
 
@@ -227,15 +237,24 @@ public class GameEngine
                 if (onlineMode)
                 {
                     //Render all other_players at once
-                    for (int e = 0; e < other_players.Count; e++)
+                    foreach (var item in other_players)
                     {
-                        if (other_players[e].X == x &&
-                            other_players[e].Y == y)
+                        if (item.Value.X == x &&
+                            item.Value.Y == y)
                         {
-                            frame[y, x] = other_players[e]._char;
+                            frame[y, x] = item.Value._char;
                             break;
                         }
                     }
+                    //for (int e = 0; e < other_players.Count; e++)
+                    //{
+                    //    if (other_players[e].X == x &&
+                    //        other_players[e].Y == y)
+                    //    {
+                    //        frame[y, x] = other_players[e]._char;
+                    //        break;
+                    //    }
+                    //}
                 }
 
             }
@@ -243,7 +262,6 @@ public class GameEngine
         return frame;
     }
     #endregion
-
 
     private void Input()
     {

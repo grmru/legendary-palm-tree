@@ -48,8 +48,25 @@ namespace TEC.SimpleServer
             while (isRunning)
             {
                 TcpClient client = listener.AcceptTcpClient();
-                Console.WriteLine("Client " + client.Client.RemoteEndPoint + " connected.");
-                NetworkStream nStream = client.GetStream();
+
+                System.Threading.Thread th = new Thread(HandleConnection);
+                th.Start(client);
+
+                System.Threading.Thread.Sleep(10);
+            }
+
+            listener.Stop();
+            Console.WriteLine("Program terminated.");
+        }
+
+        public static void HandleConnection(object clt)
+        {
+            TcpClient client = (TcpClient)clt;
+            Console.WriteLine("Client " + client.Client.RemoteEndPoint + " connected.");
+            NetworkStream nStream = client.GetStream();
+
+            while (client.Connected)
+            {
                 List<byte> bytes = new List<byte>();
                 if (nStream.CanRead)
                 {
@@ -83,7 +100,7 @@ namespace TEC.SimpleServer
                 string response_string = System.Text.Encoding.UTF8.GetString(response_bytes);
 
                 Console.WriteLine($"---sending: {response_string}");
-                
+
                 if (nStream.CanWrite)
                 {
                     try
@@ -95,14 +112,12 @@ namespace TEC.SimpleServer
                         Console.Write("[ERROR]: " + ex.ToString());
                     }
                 }
-                nStream.Close();
-                client.Close();
 
                 System.Threading.Thread.Sleep(10);
             }
 
-            listener.Stop();
-            Console.WriteLine("Program terminated.");
+            nStream.Close();
+            client.Close();
         }
 
         /// <summary>
@@ -120,7 +135,13 @@ namespace TEC.SimpleServer
             }
             else
             {
-                allCords.Add(rData[0], new Cords() {X = rData[1], Y = rData[2] });
+                if (rData.Length > 2)
+                {
+                    if (rData[0] != string.Empty)
+                    {
+                        allCords.Add(rData[0], new Cords() {X = rData[1], Y = rData[2] });
+                    }
+                }
             }
 
             string[] allCordsKeys = new string[allCords.Keys.Count];

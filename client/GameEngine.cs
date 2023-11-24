@@ -51,6 +51,9 @@ public class GameEngine
     private int _port = 0;
     private bool _debugMode = false;
 
+    TcpClient _client;
+    NetworkStream _stream;
+
     //---------------------------------------Main-------------------------------------------------
 
     #region Main
@@ -84,6 +87,9 @@ public class GameEngine
                 break;
             }
         }
+
+        this._client = new TcpClient(this._addr, this._port);
+        this._stream = this._client.GetStream();
     }
 
     public void Run()
@@ -129,6 +135,9 @@ public class GameEngine
             SingleRequestToServer();
             System.Threading.Thread.Sleep(30);
         }
+
+        this._stream.Close();
+        this._client.Close();
     }
 
     public void SingleRequestToServer()
@@ -136,22 +145,18 @@ public class GameEngine
         string currentPlayerData = NickName + "-" + _player.X + "-" + _player.Y;
         Byte[] data = System.Text.Encoding.UTF8.GetBytes(currentPlayerData);
 
-        TcpClient client = new TcpClient(this._addr, this._port);
-
-        NetworkStream stream = client.GetStream();
-
         // Send the message to the connected TcpServer.
-        stream.Write(data, 0, data.Length);
+        this._stream.Write(data, 0, data.Length);
 
         List<byte> bytes = new List<byte>();
-        if (stream.CanRead)
+        if (this._stream.CanRead)
         {
             byte[] readBuffer = new byte[1024];
             do
             {
                 try
                 {
-                    int count = stream.Read(readBuffer, 0, readBuffer.Length);
+                    int count = this._stream.Read(readBuffer, 0, readBuffer.Length);
                     byte[] rData = new byte[count];
                     for (int i = 0; i < count; i++)
                     {
@@ -165,7 +170,7 @@ public class GameEngine
                 }
                 System.Threading.Thread.Sleep(1);
             }
-            while (stream.DataAvailable);
+            while (this._stream.DataAvailable);
         }
 
         _p_data = System.Text.Encoding.UTF8.GetString(bytes.ToArray());

@@ -77,11 +77,13 @@ namespace TEC.SimpleServer
 
                 string received_string = System.Text.Encoding.UTF8.GetString(bytes.ToArray());
 
-                Console.Write(received_string); Console.Write(System.Environment.NewLine);
-                Console.WriteLine("--received " + received_string.Length + " bytes");
-                //Console.WriteLine($"--received {received_string.Length} bytes");
+                Console.WriteLine($"--received: {received_string}");
 
                 byte[] response_bytes = GetResponse(received_string);
+                string response_string = System.Text.Encoding.UTF8.GetString(response_bytes);
+
+                Console.WriteLine($"---sending: {response_string}");
+                
                 if (nStream.CanWrite)
                 {
                     try

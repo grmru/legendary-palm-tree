@@ -9,6 +9,7 @@ public class Program
     {
         string nn = "";
         string onlineMode = "";
+        bool isDebugMode = false;
 
         string addr = "127.0.0.1";
         int port = 1234;
@@ -30,6 +31,20 @@ public class Program
             onlineMode = Console.ReadLine();
         }
 
+        Console.Clear();
+
+        #if DEBUG
+            Console.WriteLine("Mode=Debug");
+            Console.WriteLine("Debug mode? (y/n): ");
+            string debugResponse = Console.ReadLine();
+            if (debugResponse.Trim().ToLower() == "y")
+            {
+                isDebugMode = true;
+            }
+        #else
+            Console.WriteLine("Mode=Release"); 
+        #endif
+
         if(onlineMode == "n")
         {
             game = new GameEngine(_onlineMode:false);
@@ -44,7 +59,7 @@ public class Program
             }
 
             Console.WriteLine("Connecting to server...");
-            game = new GameEngine(_nn:nn, _addr:addr, _port:port);
+            game = new GameEngine(_nn:nn, _addr:addr, _port:port, _debugMode:isDebugMode);
             game.Run();
         }
     }

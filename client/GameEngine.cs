@@ -48,11 +48,16 @@ public class GameEngine
 
     private string _addr = "";
     private int _port = 0;
+    private bool _debugMode = false;
 
     //---------------------------------------Main-------------------------------------------------
 
     #region Main
-    public GameEngine(bool _onlineMode = true, string _nn = "", string _addr = "127.0.0.1", int _port = 1234)
+    public GameEngine(bool _onlineMode = true, 
+                      string _nn = "", 
+                      string _addr = "127.0.0.1", 
+                      int _port = 1234,
+                      bool _debugMode = false)
     {
         Console.CancelKeyPress += (sender, args) => Exit();
 
@@ -61,6 +66,7 @@ public class GameEngine
 
         this._addr = _addr;
         this._port = _port;
+        this._debugMode = _debugMode;
 
         //Items creation
         this.entities.Add(_player);
@@ -81,9 +87,13 @@ public class GameEngine
 
     public void Run()
     {
-        if(onlineMode){
-            System.Threading.Thread th = new Thread(GetPlayersData);
-            th.Start();
+        if(onlineMode)
+        {
+            if (!this._debugMode)
+            {
+                System.Threading.Thread th = new Thread(GetPlayersData);
+                th.Start();
+            }
         }
 
         while(isRunning)
@@ -115,60 +125,63 @@ public class GameEngine
     {
         while(isRunning)
         {
-
-            string currentPlayerData = NickName + "-" + _player.X + "-" + _player.Y;
-            Byte[] data = System.Text.Encoding.UTF8.GetBytes(currentPlayerData);
-
-            TcpClient client = new TcpClient(this._addr, this._port);
-
-            NetworkStream stream = client.GetStream();
-
-            // Send the message to the connected TcpServer.
-            stream.Write(data, 0, data.Length);
-
-            List<byte> bytes = new List<byte>();
-            if (stream.CanRead)
-            {
-                byte[] readBuffer = new byte[1024];
-                do
-                {
-                    try
-                    {
-                        int count = stream.Read(readBuffer, 0, readBuffer.Length);
-                        byte[] rData = new byte[count];
-                        for (int i = 0; i < count; i++)
-                        {
-                            rData[i] = readBuffer[i];
-                        }
-                        bytes.AddRange(rData);
-                    }
-                    catch (Exception ex)
-                    {
-                        Console.Write("[ERROR]: " + ex.ToString());
-                    }
-                    System.Threading.Thread.Sleep(1);
-                }
-                while (stream.DataAvailable);
-            }
-
-            _p_data = System.Text.Encoding.UTF8.GetString(bytes.ToArray());
-
-            //Split Players
-            string[] temp_p_data = _p_data.Split('_');
-            temp_p_data = temp_p_data.Take(temp_p_data.Length - 1).ToArray();
-
-            //Set Players
-            other_players.Clear();
-            for (int i = 0; i < temp_p_data.Length; i++)
-            {
-                string[] temp_p_var = temp_p_data[i].Split('-');
-
-                //Check if isn't local player
-                if(temp_p_var[0] != NickName)
-                    other_players.Add(new Item(temp_p_var[0], '@', int.Parse(temp_p_var[1]), int.Parse(temp_p_var[2])));
-            }
-
+            SingleRequestToServer();
             System.Threading.Thread.Sleep(30);
+        }
+    }
+
+    public void SingleRequestToServer()
+    {
+        string currentPlayerData = NickName + "-" + _player.X + "-" + _player.Y;
+        Byte[] data = System.Text.Encoding.UTF8.GetBytes(currentPlayerData);
+
+        TcpClient client = new TcpClient(this._addr, this._port);
+
+        NetworkStream stream = client.GetStream();
+
+        // Send the message to the connected TcpServer.
+        stream.Write(data, 0, data.Length);
+
+        List<byte> bytes = new List<byte>();
+        if (stream.CanRead)
+        {
+            byte[] readBuffer = new byte[1024];
+            do
+            {
+                try
+                {
+                    int count = stream.Read(readBuffer, 0, readBuffer.Length);
+                    byte[] rData = new byte[count];
+                    for (int i = 0; i < count; i++)
+                    {
+                        rData[i] = readBuffer[i];
+                    }
+                    bytes.AddRange(rData);
+                }
+                catch (Exception ex)
+                {
+                    Console.Write("[ERROR]: " + ex.ToString());
+                }
+                System.Threading.Thread.Sleep(1);
+            }
+            while (stream.DataAvailable);
+        }
+
+        _p_data = System.Text.Encoding.UTF8.GetString(bytes.ToArray());
+
+        //Split Players
+        string[] temp_p_data = _p_data.Split('_');
+        temp_p_data = temp_p_data.Take(temp_p_data.Length - 1).ToArray();
+
+        //Set Players
+        other_players.Clear();
+        for (int i = 0; i < temp_p_data.Length; i++)
+        {
+            string[] temp_p_var = temp_p_data[i].Split('-');
+
+            //Check if isn't local player
+            if (temp_p_var[0] != NickName)
+                other_players.Add(new Item(temp_p_var[0], '@', int.Parse(temp_p_var[1]), int.Parse(temp_p_var[2])));
         }
     }
 
@@ -232,12 +245,15 @@ public class GameEngine
     #endregion
 
 
-    private void Input(){
-
+    private void Input()
+    {
         ConsoleKeyInfo key = Console.ReadKey(true);
 
         switch(key.Key)
         {
+            case ConsoleKey.F5:
+                SingleRequestToServer();
+                return;
             case ConsoleKey.Q:
                 isRunning = false;
                 Exit();

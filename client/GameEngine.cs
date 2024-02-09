@@ -233,7 +233,7 @@ public class GameEngine
                     if (entities[t].X == x &&
                         entities[t].Y == y)
                     {
-                        frame[y, x] = entities[t]._char;
+                        frame[y, x] = entities[t].character;
                         break;
                     }
                     else frame[y, x] = emptyTile;
@@ -247,7 +247,7 @@ public class GameEngine
                         if (item.Value.X == x &&
                             item.Value.Y == y)
                         {
-                            frame[y, x] = item.Value._char;
+                            frame[y, x] = item.Value.character;
                             break;
                         }
                     }

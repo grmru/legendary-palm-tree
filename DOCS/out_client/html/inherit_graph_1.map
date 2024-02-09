@@ -1,0 +1,7 @@
+<map id="Иерархия классов. Графический вид." name="Иерархия классов. Графический вид.">
+<area shape="rect" id="Node000000" href="$classPalmTree_1_1Items_1_1Entity.html" title="Базовый класс объекта игры. В котором определяются наименование и координаты элемента игры на поле" alt="" coords="5,31,158,57"/>
+<area shape="rect" id="Node000001" href="$classPalmTree_1_1Items_1_1Bullet.html" title="Объект реализующий функции снаряда (пули) в игре" alt="" coords="206,5,357,32"/>
+<area shape="poly" id="edge1_Node000000_Node000001" title=" " alt="" coords="173,30,205,26,205,31,173,35"/>
+<area shape="rect" id="Node000002" href="$classPalmTree_1_1Items_1_1Item.html" title="Объект игрового элемента" alt="" coords="209,56,354,83"/>
+<area shape="poly" id="edge2_Node000000_Node000002" title=" " alt="" coords="173,53,209,58,209,63,173,58"/>
+</map>

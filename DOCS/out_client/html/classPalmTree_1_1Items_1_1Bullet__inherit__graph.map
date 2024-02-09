@@ -1,0 +1,5 @@
+<map id="PalmTree.Items.Bullet" name="PalmTree.Items.Bullet">
+<area shape="rect" id="Node000001" title="Объект реализующий функции снаряда (пули) в игре" alt="" coords="5,80,157,107"/>
+<area shape="rect" id="Node000002" href="$classPalmTree_1_1Items_1_1Entity.html" title="Базовый класс объекта игры. В котором определяются наименование и координаты элемента игры на поле" alt="" coords="53,5,109,32"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="84,48,84,80,78,80,78,48"/>
+</map>

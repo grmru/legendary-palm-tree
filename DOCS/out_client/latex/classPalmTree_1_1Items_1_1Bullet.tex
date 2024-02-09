@@ -1,0 +1,102 @@
+\doxysection{Класс Palm\+Tree.\+Items.\+Bullet}
+\hypertarget{classPalmTree_1_1Items_1_1Bullet}{}\label{classPalmTree_1_1Items_1_1Bullet}\index{PalmTree.Items.Bullet@{PalmTree.Items.Bullet}}
+
+
+Объект реализующий функции снаряда (пули) в игре  
+
+
+
+
+Граф наследования\+:Palm\+Tree.\+Items.\+Bullet\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=194pt]{classPalmTree_1_1Items_1_1Bullet__inherit__graph}
+\end{center}
+\end{figure}
+
+
+Граф связей класса Palm\+Tree.\+Items.\+Bullet\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=194pt]{classPalmTree_1_1Items_1_1Bullet__coll__graph}
+\end{center}
+\end{figure}
+\doxysubsubsection*{Открытые члены}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{classPalmTree_1_1Items_1_1Bullet_a7d252456b1aa2c7d5d4c2ddc3f6b6013}{Bullet}} (\mbox{\hyperlink{classPalmTree_1_1Engine_1_1GameEngine}{Game\+Engine}} \+\_\+gm, int \+\_\+x\+Dir, int \+\_\+y\+Dir, string \+\_\+n="{}Bullet"{}, char \+\_\+c=\textquotesingle{} \texorpdfstring{$\ast$}{*}\textquotesingle{}, int \+\_\+x=0, int \+\_\+y=0)
+\begin{DoxyCompactList}\small\item\em Инициализация объекта \end{DoxyCompactList}\item 
+override void \mbox{\hyperlink{classPalmTree_1_1Items_1_1Bullet_a88777d77852db7e795fc09f54a9258c5}{Do}} ()
+\begin{DoxyCompactList}\small\item\em Метод, выполняемый на каждый кадр отрисовки \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Открытые члены унаследованные от \mbox{\hyperlink{classPalmTree_1_1Items_1_1Entity}{Palm\+Tree.\+Items.\+Entity}}}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{classPalmTree_1_1Items_1_1Entity_ab252f8fe9c60317486fefa7879b989ee}{Entity}} (string \+\_\+n, char \+\_\+c, int \+\_\+x=0, int \+\_\+y=0)
+\begin{DoxyCompactList}\small\item\em Базовая инициализация объекта игры \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{classPalmTree_1_1Items_1_1Entity_a856b336f1ca75465b0e44be5c2b0e798}{Do}} ()
+\begin{DoxyCompactList}\small\item\em Метод, выполняемый на каждый кадр отрисовки \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsubsection*{Дополнительные унаследованные члены}
+\doxysubsection*{Свойства унаследованные от \mbox{\hyperlink{classPalmTree_1_1Items_1_1Entity}{Palm\+Tree.\+Items.\+Entity}}}
+\begin{DoxyCompactItemize}
+\item 
+string \mbox{\hyperlink{classPalmTree_1_1Items_1_1Entity_a5a48dd0af801031a97d15ec19cf27c02}{item\+Name}} = "{}"{}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Наименование элемента \end{DoxyCompactList}\item 
+char \mbox{\hyperlink{classPalmTree_1_1Items_1_1Entity_ad9f66f635f504acc7cb21e7537f9dfb0}{character}} = \textquotesingle{}\+\_\+\textquotesingle{}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Символ, которым отображается элемент на поле \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{classPalmTree_1_1Items_1_1Entity_afa6adfce5f9b2bed5e9fb325b9b27331}{X}} = 0\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Координата X на поле \end{DoxyCompactList}\item 
+int \mbox{\hyperlink{classPalmTree_1_1Items_1_1Entity_acf8d891647759afcfd10ce6a45bd2b6b}{Y}} = 0\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Координата Y на поле \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Подробное описание}
+Объект реализующий функции снаряда (пули) в игре 
+
+\doxysubsection{Конструктор(ы)}
+\Hypertarget{classPalmTree_1_1Items_1_1Bullet_a7d252456b1aa2c7d5d4c2ddc3f6b6013}\label{classPalmTree_1_1Items_1_1Bullet_a7d252456b1aa2c7d5d4c2ddc3f6b6013} 
+\index{PalmTree.Items.Bullet@{PalmTree.Items.Bullet}!Bullet@{Bullet}}
+\index{Bullet@{Bullet}!PalmTree.Items.Bullet@{PalmTree.Items.Bullet}}
+\doxysubsubsection{\texorpdfstring{Bullet()}{Bullet()}}
+{\footnotesize\ttfamily Palm\+Tree.\+Items.\+Bullet.\+Bullet (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{classPalmTree_1_1Engine_1_1GameEngine}{Game\+Engine}}}]{\+\_\+gm,  }\item[{int}]{\+\_\+x\+Dir,  }\item[{int}]{\+\_\+y\+Dir,  }\item[{string}]{\+\_\+n = {\ttfamily "{}Bullet"{}},  }\item[{char}]{\+\_\+c = {\ttfamily \textquotesingle{}\texorpdfstring{$\ast$}{*}\textquotesingle{}},  }\item[{int}]{\+\_\+x = {\ttfamily 0},  }\item[{int}]{\+\_\+y = {\ttfamily 0} }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Инициализация объекта 
+
+
+\begin{DoxyParams}{Аргументы}
+{\em \+\_\+gm} & Объект игрового движка\\
+\hline
+{\em \+\_\+x\+Dir} & Направление движения по X\\
+\hline
+{\em \+\_\+y\+Dir} & Направление движения по Y \\
+\hline
+{\em \+\_\+n} & Наименование элемента\\
+\hline
+{\em \+\_\+c} & Символ, которым отображается элемент на поле\\
+\hline
+{\em \+\_\+x} & Координата X на поле\\
+\hline
+{\em \+\_\+y} & Координата Y на поле\\
+\hline
+\end{DoxyParams}
+
+
+\doxysubsection{Методы}
+\Hypertarget{classPalmTree_1_1Items_1_1Bullet_a88777d77852db7e795fc09f54a9258c5}\label{classPalmTree_1_1Items_1_1Bullet_a88777d77852db7e795fc09f54a9258c5} 
+\index{PalmTree.Items.Bullet@{PalmTree.Items.Bullet}!Do@{Do}}
+\index{Do@{Do}!PalmTree.Items.Bullet@{PalmTree.Items.Bullet}}
+\doxysubsubsection{\texorpdfstring{Do()}{Do()}}
+{\footnotesize\ttfamily override void Palm\+Tree.\+Items.\+Bullet.\+Do (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Метод, выполняемый на каждый кадр отрисовки 
+
+
+
+Объявления и описания членов класса находятся в файле\+:\begin{DoxyCompactItemize}
+\item 
+/home/george/\+Projects/students/legendary-\/palm-\/tree/client/\mbox{\hyperlink{Item_8cs}{Item.\+cs}}\end{DoxyCompactItemize}

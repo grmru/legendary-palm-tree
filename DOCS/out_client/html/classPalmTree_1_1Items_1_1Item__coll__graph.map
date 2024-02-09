@@ -1,0 +1,5 @@
+<map id="PalmTree.Items.Item" name="PalmTree.Items.Item">
+<area shape="rect" id="Node000001" title="Объект игрового элемента" alt="" coords="5,80,150,107"/>
+<area shape="rect" id="Node000002" href="$classPalmTree_1_1Items_1_1Entity.html" title="Базовый класс объекта игры. В котором определяются наименование и координаты элемента игры на поле" alt="" coords="50,5,105,32"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="80,48,80,80,75,80,75,48"/>
+</map>
